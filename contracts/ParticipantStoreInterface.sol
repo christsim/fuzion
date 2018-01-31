@@ -3,7 +3,7 @@ pragma solidity ^0.4.17;
 // ParticipantStore
 //  - Stores a list of participants
 //  - only owner can add / remove participants
-//  - anybody can get accounts and details of participants
+//  - only participants or owner can get accounts and details of participants
 
 interface ParticipantStoreInterface {
 
