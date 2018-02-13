@@ -24,6 +24,7 @@ contract ParticipantStore is ParticipantStoreInterface {
         bool active;
         address account;
         bytes32 name;
+        uint creationTime;
     }
 
     address private _owner;
@@ -36,20 +37,28 @@ contract ParticipantStore is ParticipantStoreInterface {
     }
 
     function addParticipant(address account, bytes32 name) public onlyOwner {
-        Participant memory participant = Participant(true, account, name);
+        Participant memory existing = accountToParticipant[account];
+        require(!existing.active); // can't add same account twice
+
+        Participant memory participant = Participant(true, account, name, now);
         accountToParticipant[account] = participant;
-        participants.push(account);
+
+        if (existing.account == 0) {   // not already a disabled member
+            participants.push(account);
+        }
+        ParticipantAdded(account);
     }
 
     function removeParticipant(address account) public onlyOwner {
         accountToParticipant[account].active = false;
+        ParticipantRemoved(account);
     }
 
     // returns account and name
-    function getParticipant(address account) public view onlyActiveParticipants returns (address, bytes32) {
+    function getParticipant(address account) public view onlyActiveParticipants returns (address, bytes32 name, uint creationTime) {
         require(accountToParticipant[account].active);
         Participant memory participant = accountToParticipant[account];
-        return (participant.account, participant.name);
+        return (participant.account, participant.name, participant.creationTime);
     }
 
     function getParticipantAccounts() public view onlyActiveParticipants returns (address[]) {

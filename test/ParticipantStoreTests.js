@@ -1,43 +1,42 @@
-
 const ParticipantStoreAbtraction = artifacts.require('ParticipantStore');
 let instance;
 
-toAscii = function(hex) {
+toAscii = function (hex) {
   var str = '',
-      i = 0,
-      l = hex.length;
+    i = 0,
+    l = hex.length;
   if (hex.substring(0, 2) === '0x') {
-      i = 2;
+    i = 2;
   }
-  for (; i < l; i+=2) {
-      var code = parseInt(hex.substr(i, 2), 16);
-      if (code === 0) continue; // this is added
-      str += String.fromCharCode(code);
+  for (; i < l; i += 2) {
+    var code = parseInt(hex.substr(i, 2), 16);
+    if (code === 0) continue; // this is added
+    str += String.fromCharCode(code);
   }
   return str;
 };
 
-toBytes = function(hex) {
+toBytes = function (hex) {
   var i = 0,
-      l = hex.length;
+    l = hex.length;
   if (hex.substring(0, 2) === '0x') {
-      i = 2;
+    i = 2;
   }
   var bytes = [];
-  for (; i < l; i+=2) {
-      var code = parseInt(hex.substr(i, 2), 16);
-      if (code === 0) continue; // this is added
-      bytes.push(code);
+  for (; i < l; i += 2) {
+    var code = parseInt(hex.substr(i, 2), 16);
+    if (code === 0) continue; // this is added
+    bytes.push(code);
   }
   return bytes;
 };
 
 contract('ParticipantStore', (accounts) => {
-  beforeEach(async() => {
-    
+  beforeEach(async () => {
+
   });
 
-  it('can add participants', async() => {
+  it('can add participants', async () => {
     let instance = await ParticipantStoreAbtraction.new();
 
     await instance.addParticipant(accounts[1], "Chris");
@@ -51,7 +50,7 @@ contract('ParticipantStore', (accounts) => {
     }
   });
 
-  it('can get participant details', async() => {
+  it('can get participant details', async () => {
     let instance = await ParticipantStoreAbtraction.new();
 
     await instance.addParticipant(accounts[1], "Chris");
@@ -72,7 +71,7 @@ contract('ParticipantStore', (accounts) => {
     }
   });
 
-  it('can get all participant accounts', async() => {
+  it('can get all participant accounts', async () => {
     let instance = await ParticipantStoreAbtraction.new();
 
     await instance.addParticipant(accounts[1], "Chris");
@@ -95,7 +94,7 @@ contract('ParticipantStore', (accounts) => {
     }
   });
 
-  it('cant get participant details that doesnt exist', async() => {
+  it('cant get participant details that doesnt exist', async () => {
     let instance = await ParticipantStoreAbtraction.new();
 
     await instance.addParticipant(accounts[1], "Chris");
@@ -108,25 +107,27 @@ contract('ParticipantStore', (accounts) => {
     try {
       var participant = await instance.getParticipant(accounts[5]);
       assert.fail("should not be able to get an unknown participant.");
-    } catch(err) {
+    } catch (err) {
       assert.equal(err.message, "VM Exception while processing transaction: revert");
     }
-  });  
+  });
 
-  it('only admin can add participants', async() => {
+  it('only admin can add participants', async () => {
     let instance = await ParticipantStoreAbtraction.new();
 
     await instance.addParticipant(accounts[1], "Chris");
 
     try {
-      await instance.addParticipant(accounts[2], "Badi", {from: accounts[1]});
+      await instance.addParticipant(accounts[2], "Badi", {
+        from: accounts[1]
+      });
       assert.fail("should not be able to add participant.");
-    } catch(err) {
+    } catch (err) {
       assert.equal(err.message, "VM Exception while processing transaction: revert");
     }
   });
 
-  it('only active participants can get other participant details', async() => {
+  it('only active participants can get other participant details', async () => {
     let instance = await ParticipantStoreAbtraction.new();
 
     await instance.addParticipant(accounts[1], "Chris");
@@ -137,14 +138,16 @@ contract('ParticipantStore', (accounts) => {
     await instance.removeParticipant(accounts[1]);
 
     try {
-      await instance.getParticipant(accounts[2], {from: accounts[1]});
+      await instance.getParticipant(accounts[2], {
+        from: accounts[1]
+      });
       assert.fail("should not be able to get participant if participant has been removed.");
-    } catch(err) {
+    } catch (err) {
       assert.equal(err.message, "VM Exception while processing transaction: revert");
     }
   });
 
-  it('only active participants are returned after a remove', async() => {
+  it('only active participants are returned after a remove', async () => {
     let instance = await ParticipantStoreAbtraction.new();
 
     await instance.addParticipant(accounts[1], "Chris");
@@ -166,6 +169,37 @@ contract('ParticipantStore', (accounts) => {
       assert.equal(participantAccounts[1], accounts[3]);
       assert.equal(participantAccounts[2], accounts[4]);
     }
+  });
+
+
+  it('cant add participant twice', async () => {
+    let instance = await ParticipantStoreAbtraction.new();
+
+    await instance.addParticipant(accounts[1], "Chris");
+
+    try {
+      await instance.addParticipant(accounts[1], "John");
+      assert.fail("should not be able to add another participant with same accountid.");
+    } catch (err) {
+      assert.equal(err.message, "VM Exception while processing transaction: revert");
+    }
+  });
+
+  it('should be able to remove and readd participant', async () => {
+    let instance = await ParticipantStoreAbtraction.new();
+
+    await instance.addParticipant(accounts[1], "Chris");
+    await instance.removeParticipant(accounts[1]);
+    await instance.addParticipant(accounts[1], "John");
+    var numberOfActiveAccounts = await instance.getParticipantCount();
+    assert.equal(numberOfActiveAccounts.toNumber(), 1);
+
+    {
+      var participant = await instance.getParticipant(accounts[1]);
+      var name = toAscii(participant[1]);
+      assert.deepEqual(name, "John");
+    }
+    
   });
   
 });
