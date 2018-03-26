@@ -10,12 +10,12 @@ import "./ParticipantStoreInterface.sol";
 contract ParticipantStore is ParticipantStoreInterface {
 
     modifier onlyOwner() { 
-        require(msg.sender == _owner);
+        require(msg.sender == owner);
         _;
     }
 
     modifier onlyActiveParticipants() {
-        require(msg.sender == _owner || 
+        require(msg.sender == owner || 
                 accountToParticipant[msg.sender].active);
         _;
     }
@@ -27,13 +27,13 @@ contract ParticipantStore is ParticipantStoreInterface {
         uint creationTime;
     }
 
-    address private _owner;
+    address public owner;
 
     address[] private participants;
     mapping (address => Participant) private accountToParticipant;
 
     function ParticipantStore() public {
-        _owner = msg.sender;
+        owner = msg.sender;
     }
 
     function addParticipant(address account, bytes32 name) public onlyOwner {
