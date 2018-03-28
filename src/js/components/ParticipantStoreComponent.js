@@ -87,12 +87,14 @@ const ParticipantAccounts = (props) => {
           <Error error={participantAccounts.error}/>
           <table class="table"> 
             <thead>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Action</th>
+              <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Action</th>
+              </tr>
             </thead>
             <tbody>
-            { participantDetails.map(a => <Participant participantDetails={a}/> ) }
+            { participantDetails.map(a => <Participant key={a.account} participantDetails={a}/> ) }
             </tbody>
           </table>
       </div>
