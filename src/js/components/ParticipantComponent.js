@@ -38,8 +38,11 @@ export default class Participant extends React.Component {
     var isOwner = this.props.accountDetails.accounts && this.props.accountDetails.accounts[0].account == this.props.contractOwner.owner;
     var participantDetails = this.props.participantDetails;
     return (
-      <div className="container">
-        <div>Account: {participantDetails.account}</div> <div>Name: {participantDetails.name} {isOwner ? <button onClick={e => this.removeParticipant(e, participantDetails.account)}>Remove</button> : ''}</div>
-      </div>);
+      <tr key={participantDetails.account}>
+        <td>{participantDetails.name}</td>
+        <td>{participantDetails.account}</td>
+        <td>{isOwner ? <button class="btn btn-xs btn-danger" onClick={e => this.removeParticipant(e, participantDetails.account)}>Remove</button> : ''}</td>
+      </tr>
+    );
   }
 }

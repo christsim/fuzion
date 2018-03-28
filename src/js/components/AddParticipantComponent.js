@@ -66,15 +66,18 @@ const AddParticipantForm = (props) => {
     return null;
   }
 
-  return (<div className="container">
-  <div className="pure-u-1-1">
-    <label>Account</label>
-    <input type='text' onChange={(e) => props.setInputValue(e)} name="account"/>
-    </div>
-    <div className="pure-u-1-1">
-    <label>Name</label>
-    <input type='text' onChange={(e) => props.setInputValue(e)} name="name"/>
-    </div>
-    <button onClick={(e) => props.addParticipant(e)}>Add</button>
-  </div>);
+  return (
+    <form className="input-group">
+      <div className="input-group">
+        <span class="input-group-addon" id="basic-addon1">Account</span>  
+        <input class="form-control" placeholder="address" type='text' onChange={(e) => props.setInputValue(e)} name="account"/>
+      </div>
+
+      <div className="input-group">
+        <span class="input-group-addon" id="basic-addon1">Name</span>  
+        <input class="form-control" placeholder="name" type='text' onChange={(e) => props.setInputValue(e)} name="name"/>        
+      </div>
+      
+     <button class="btn btn-lg btn-primary" onClick={(e) => props.addParticipant(e)}>Add</button>
+  </form>);
 }

@@ -41,13 +41,18 @@ export default class ParticipantStoreComponent extends React.Component {
 
     if(participantStoreContract) {
       return (
-        <div>
-          <Loading loading={participantStoreContract.loading}/>
-          <Error error={participantStoreContract.error}/>
-          <div>Contract address: {participantStoreContract.address}</div>
-          <ParticipantAccounts participantAccounts={this.props.participantAccounts}/>
-          <ParticipantContractOwner contractOwner={this.props.contractOwner}/>
-          <AddParticipant/>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h2 class="panel-title">Pariticipant Store Contract</h2>
+          </div>
+          <div class="panel-body">
+            <Loading loading={participantStoreContract.loading}/>
+            <Error error={participantStoreContract.error}/>
+            <div class="well">Contract address: {participantStoreContract.address}</div>
+            <ParticipantContractOwner contractOwner={this.props.contractOwner}/>
+            <ParticipantAccounts participantAccounts={this.props.participantAccounts}/>
+            <AddParticipant/>
+          </div>
         </div>
       );
     } else {
@@ -61,7 +66,7 @@ const ParticipantContractOwner = (props) => {
   var contractOwner = props.contractOwner;
 
   return (
-    <div>
+    <div class="well">
       <Loading loading={contractOwner.loading}/>
       <Error error={contractOwner.error}/>
       <div>Owner: {contractOwner.owner} </div>
@@ -77,11 +82,19 @@ const ParticipantAccounts = (props) => {
     var participantDetails = participantAccounts.participantDetails || [];
     return (
       <div>
-        <Loading loading={participantAccounts.loading}/>
-        <Error error={participantAccounts.error}/>
-        <ul> Accounts:
-          { participantDetails.map(a => <li key={a.account} ><Participant participantDetails={a}/> </li>) }
-        </ul>
+          <h3>Accounts</h3>
+          <Loading loading={participantAccounts.loading}/>
+          <Error error={participantAccounts.error}/>
+          <table class="table"> 
+            <thead>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+            { participantDetails.map(a => <Participant participantDetails={a}/> ) }
+            </tbody>
+          </table>
       </div>
     );  
   } else {

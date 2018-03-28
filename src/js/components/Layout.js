@@ -8,10 +8,12 @@ export default class Layout extends React.Component {
 
     render() {
         return (
-            <Web3Provider>
-                <Web3DetailsExample/>
-                <ParticipantStoreComponent/>
-            </Web3Provider>
+            <div>
+                <Web3Provider>
+                        <Web3DetailsExample/>
+                        <ParticipantStoreComponent/>
+                </Web3Provider>
+            </div>
         );
     }
 }
