@@ -1,9 +1,9 @@
-# Basic redux-react skeleton application with web3 integration
+# Participant Store Web3 Application
 
-- Adds web3 to the redux store
-- Can notify on account changes
-- Can notify on a new mined block
-- Can notify on balance changes
+Stores a list of participants - for a book club or something.
+
+- only the owner can add or remove participants
+- partipants can view all the other participants.
 
 ```
 npm install
